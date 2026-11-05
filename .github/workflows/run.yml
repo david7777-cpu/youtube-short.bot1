@@ -1,13 +1,12 @@
 name: YouTube Short Automation
 
 on:
-  schedule:
-    - cron: '0 17 * * *' # Läuft jeden Tag um 17:00 Uhr UTC
-  workflow_dispatch: # Ermöglicht auch einen manuellen Start per Klick
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
+  
     steps:
       - name: Repository auschecken
         uses: actions/checkout@v4
@@ -24,3 +23,9 @@ jobs:
         run: python main.py
         env:
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+
+      - name: Video als Artifact hochladen
+        uses: actions/upload-artifact@v4
+        with:
+          name: youtube-short-video
+          path: short.mp4
