@@ -1,0 +1,26 @@
+name: YouTube Short Automation
+
+on:
+  schedule:
+    - cron: '0 17 * * *' # Läuft jeden Tag um 17:00 Uhr UTC
+  workflow_dispatch: # Ermöglicht auch einen manuellen Start per Klick
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Repository auschecken
+        uses: actions/checkout@v4
+
+      - name: Python einrichten
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Pakete installieren
+        run: pip install -r requirements.txt
+
+      - name: Skript ausführen
+        run: python main.py
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
