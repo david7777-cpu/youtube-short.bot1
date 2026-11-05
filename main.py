@@ -1,19 +1,18 @@
 import os
 import asyncio
 import requests
-import google.generativeai as genai
+from google import genai
 import edge_tts
 from moviepy.editor import ImageClip, AudioFileClip
 
 print("=== WORKFLOW GESTARTET ===")
 
-# 1. Gemini AI generiert das Skript
-genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
-
-# Modellname mit '-latest' anpassen, damit die alte Bibliothek ihn findet:
-model = genai.GenerativeModel("gemini-1.5-flash-latest")
-
-response = model.generate_content("Erstelle ein kurzes, spannendes Fakt-Skript für ein YouTube Short auf Deutsch (max 3 Sätze).")
+# 1. Gemini AI generiert das Skript (Neue offizielle google-genai Syntax)
+client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY"))
+response = client.models.generate_content(
+    model="gemini-2.5-flash",
+    contents="Erstelle ein kurzes, spannendes Fakt-Skript für ein YouTube Short auf Deutsch (max 3 Sätze)."
+)
 script_text = response.text.strip()
 print("Skript erstellt:", script_text)
 
@@ -23,7 +22,7 @@ async def create_voice():
     await communicate.save("audio.mp3")
 asyncio.run(create_voice())
 
-# 3. Hintergrundbild holen (Pollinations AI - kostenlos)
+# 3. Hintergrundbild holen (Pollinations AI - völlig kostenlos)
 img_url = f"https://image.pollinations.ai/prompt/dark%20mysterious%20background?width=1080&height=1920&nologo=true"
 img_data = requests.get(img_url).content
 with open("background.jpg", "wb") as handler:
