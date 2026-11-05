@@ -9,7 +9,10 @@ print("=== WORKFLOW GESTARTET ===")
 
 # 1. Gemini AI generiert das Skript
 genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
-model = genai.GenerativeModel("gemini-1.5-flash")
+
+# Modellname mit '-latest' anpassen, damit die alte Bibliothek ihn findet:
+model = genai.GenerativeModel("gemini-1.5-flash-latest")
+
 response = model.generate_content("Erstelle ein kurzes, spannendes Fakt-Skript für ein YouTube Short auf Deutsch (max 3 Sätze).")
 script_text = response.text.strip()
 print("Skript erstellt:", script_text)
@@ -20,7 +23,7 @@ async def create_voice():
     await communicate.save("audio.mp3")
 asyncio.run(create_voice())
 
-# 3. Hintergrundbild holen (Pollinations AI - völlig kostenlos)
+# 3. Hintergrundbild holen (Pollinations AI - kostenlos)
 img_url = f"https://image.pollinations.ai/prompt/dark%20mysterious%20background?width=1080&height=1920&nologo=true"
 img_data = requests.get(img_url).content
 with open("background.jpg", "wb") as handler:
