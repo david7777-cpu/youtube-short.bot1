@@ -7,10 +7,10 @@ from moviepy.editor import ImageClip, AudioFileClip
 
 print("=== WORKFLOW GESTARTET ===")
 
-# 1. Gemini AI generiert das Skript (Neue offizielle google-genai Syntax)
+# 1. Gemini AI generiert das Skript mit dem aktuellen Modell
 client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY"))
 response = client.models.generate_content(
-    model="gemini-2.5-flash",
+    model="gemini-3.8-flash",
     contents="Erstelle ein kurzes, spannendes Fakt-Skript für ein YouTube Short auf Deutsch (max 3 Sätze)."
 )
 script_text = response.text.strip()
