@@ -1,4 +1,3 @@
-
 import os
 import asyncio
 import time
@@ -9,7 +8,7 @@ from moviepy.editor import ImageClip, AudioFileClip
 
 print("=== WORKFLOW STARTED ===")
 
-# 1. Groq AI generates the script using Llama 3.3 (fast & stable)
+# 1. Groq AI generiert das Skript (Aktuelles kostenloses Modell)
 client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
 
 script_text = ""
@@ -17,7 +16,7 @@ for attempt in range(3):
     try:
         print(f"Attempt {attempt + 1} of 3 to generate script...")
         completion = client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
+            model="openai/gpt-oss-120b",
             messages=[
                 {
                     "role": "user",
@@ -25,6 +24,7 @@ for attempt in range(3):
                 }
             ],
             temperature=0.7,
+            max_tokens=1024
         )
         script_text = completion.choices[0].message.content.strip()
         break
@@ -37,19 +37,19 @@ if not script_text:
 
 print("Script successfully created:", script_text)
 
-# 2. Voice output in English (Edge-TTS)
+# 2. Sprach-Ausgabe in Englisch (Edge-TTS)
 async def create_voice():
     communicate = edge_tts.Communicate(script_text, "en-US-ChristopherNeural")
     await communicate.save("audio.mp3")
 asyncio.run(create_voice())
 
-# 3. Download high-impact background image (Pollinations AI)
+# 3. Hintergrundbild herunterladen (Pollinations AI)
 img_url = "https://image.pollinations.ai/prompt/dark%20cinematic%20mysterious%20background%20moody%20lighting%204k?width=1080&height=1920&nologo=true"
 img_data = requests.get(img_url).content
 with open("background.jpg", "wb") as handler:
     handler.write(img_data)
 
-# 4. Assemble video with motion (Cinematic Zoom Effect using MoviePy)
+# 4. Video mit fließendem Zoom-Effekt zusammensetzen (MoviePy)
 audio_clip = AudioFileClip("audio.mp3")
 image_clip = ImageClip("background.jpg").set_duration(audio_clip.duration)
 video_clip = image_clip.resize(lambda t: 1 + 0.03 * t)
